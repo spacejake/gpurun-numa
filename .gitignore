@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg
+
+# local PyPI credentials (never commit)
+.pypirc
