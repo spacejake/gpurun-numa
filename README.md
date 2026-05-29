@@ -4,7 +4,8 @@ Run any command with **GPU-local CPU and NUMA affinity** on Linux NVIDIA hosts.
 
 `gpurun` parses `nvidia-smi topo -m`, picks the CPUs and memory nodes closest to your selected GPUs, sets `CUDA_VISIBLE_DEVICES`, and wraps your command with `numactl` or `taskset`.
 
-> **PyPI:** install as [`gpurun-numa`](https://pypi.org/project/gpurun-numa/) — the name `gpurun` is already taken on PyPI by a different GPU scheduler. The command you run is still `gpurun`.
+> **Install now:** `pip install "gpurun-numa @ git+https://github.com/spacejake/gpurun-numa.git"`  
+> **PyPI (later):** distribution name [`gpurun-numa`](https://pypi.org/project/gpurun-numa/) — `gpurun` on PyPI is a different tool. CLI command: **`gpurun`**.
 
 ## Why this matters
 
@@ -19,6 +20,40 @@ Training jobs that pin dataloader workers and the main process to the wrong sock
 
 ## Install
 
+### From GitHub (recommended before PyPI release)
+
+```bash
+pip install "gpurun-numa @ git+https://github.com/spacejake/gpurun-numa.git"
+```
+
+Pin a branch or tag:
+
+```bash
+pip install "gpurun-numa @ git+https://github.com/spacejake/gpurun-numa.git@main"
+```
+
+Editable (live checkout for development):
+
+```bash
+git clone https://github.com/spacejake/gpurun-numa.git
+cd gpurun-numa
+pip install -e .
+```
+
+With **uv**:
+
+```bash
+uv pip install "gpurun-numa @ git+https://github.com/spacejake/gpurun-numa.git"
+```
+
+Use in another project’s `pyproject.toml`:
+
+```toml
+dependencies = [
+    "gpurun-numa @ git+https://github.com/spacejake/gpurun-numa.git",
+]
+```
+
 ### From PyPI (after release)
 
 ```bash
@@ -26,7 +61,7 @@ pip install gpurun-numa
 gpurun --help
 ```
 
-### From source
+### From source (local checkout)
 
 ```bash
 cd /path/to/gpurun
