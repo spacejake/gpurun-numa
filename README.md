@@ -102,17 +102,24 @@ export CUDA_VISIBLE_DEVICES=2,3
 gpurun python train.py
 ```
 
-### Dry run
+### Dry run / preview launch command
 
 ```bash
 gpurun -g 4,5 --dry-run torchrun --standalone --nproc_per_node=2 train.py
 ```
 
-Prints:
+Prints (stdout) and does not execute:
 
 ```text
 export CUDA_VISIBLE_DEVICES=4,5
 numactl --physcpubind=12-23,36-47 --membind=1 torchrun ...
+```
+
+Print the same preview and **still run** (stderr, then exec):
+
+```bash
+gpurun -g 4,5 --show-command python train.py
+gpurun -g 4,5 --verbose python train.py   # same launch preview
 ```
 
 ### Show topology
@@ -136,10 +143,11 @@ Parsed mapping is cached at `~/.cache/gpurun/topology.json` (refreshed when host
 | `--mode none` | No CPU pinning |
 | `--no-pin` | Same as `--mode none` |
 | `--fallback` | In `auto` mode, run without pinning if tools/topology fail |
-| `--dry-run` | Print wrapped command, do not execute |
+| `--dry-run` | Print `export` + wrapped command (stdout), do not execute |
+| `--show-command` | Print `export` + wrapped command (stderr), then execute |
 | `--show-topology` | Print GPU → CPU/NUMA table |
 | `--refresh-topology` | Re-query `nvidia-smi` and update cache |
-| `--verbose` | With `--show-topology`, print raw topo matrix |
+| `--verbose` | Raw topo with `--show-topology`; launch preview with a command (like `--show-command`) |
 
 ## Limitations
 

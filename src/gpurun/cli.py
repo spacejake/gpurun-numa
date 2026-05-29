@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import io
 import os
+import shlex
 import sys
 
 from gpurun.launcher import build_launch_cmd
@@ -78,7 +80,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument(
         "--verbose",
         action="store_true",
-        help="With --show-topology, also print raw nvidia-smi topo -m output.",
+        help="Print extra detail: raw nvidia-smi topo with --show-topology; "
+        "before launch, print export CUDA_VISIBLE_DEVICES + wrapped command.",
+    )
+    p.add_argument(
+        "--show-command",
+        action="store_true",
+        help="Before launch, print export CUDA_VISIBLE_DEVICES + wrapped command "
+        "(to stderr; command still runs). Same output as --dry-run.",
     )
     p.add_argument(
         "--refresh-topology",
@@ -124,9 +133,24 @@ def env_with_cuda(gpu_ids: list[int]) -> dict[str, str]:
     return env
 
 
-def format_dry_run(launch: list[str], gpu_ids: list[int]) -> str:
+def format_launch_preview(launch: list[str], gpu_ids: list[int]) -> str:
+    """Shell-style preview: export line plus wrapped argv."""
     cvd = cuda_visible_devices_str(gpu_ids)
-    return f"export CUDA_VISIBLE_DEVICES={cvd}\n{' '.join(launch)}"
+    return f"export CUDA_VISIBLE_DEVICES={cvd}\n{shlex.join(launch)}"
+
+
+def print_launch_preview(
+    launch: list[str],
+    gpu_ids: list[int],
+    *,
+    stream: io.TextIOBase | None = None,
+) -> None:
+    out = sys.stderr if stream is None else stream
+    print(format_launch_preview(launch, gpu_ids), file=out)
+
+
+def wants_launch_preview(args: argparse.Namespace) -> bool:
+    return args.verbose or args.show_command
 
 
 def show_topology(
@@ -209,8 +233,11 @@ def main(argv: list[str] | None = None) -> int:
     env = env_with_cuda(gpu_ids)
 
     if args.dry_run:
-        print(format_dry_run(launch, gpu_ids))
+        print(format_launch_preview(launch, gpu_ids))
         return 0
+
+    if wants_launch_preview(args):
+        print_launch_preview(launch, gpu_ids)
 
     os.execvpe(launch[0], launch, env)
     return 0  # unreachable
