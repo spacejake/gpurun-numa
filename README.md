@@ -5,7 +5,7 @@ Run any command with **GPU-local CPU and NUMA affinity** on Linux NVIDIA hosts.
 `gpurun` parses `nvidia-smi topo -m`, picks the CPUs and memory nodes closest to your selected GPUs, sets `CUDA_VISIBLE_DEVICES`, and wraps your command with `numactl` or `taskset`.
 
 > **Install now:** `pip install "gpurun-numa @ git+https://github.com/spacejake/gpurun-numa.git"`  
-> **PyPI (later):** distribution name [`gpurun-numa`](https://pypi.org/project/gpurun-numa/) — `gpurun` on PyPI is a different tool. CLI command: **`gpurun`**.
+> **PyPI:** distribution name [`gpurun-numa`](https://pypi.org/project/gpurun-numa/) — `gpurun` on PyPI is a different tool. CLI command: **`gpurun`**.
 
 ## Why this matters
 
