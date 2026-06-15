@@ -25,6 +25,9 @@ classifiers = [
     "Topic :: System :: Hardware",
     "Topic :: System :: Systems Administration",
 ]
+dependencies = [
+    "keyring>=25.7.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/spacejake/gpurun-numa"
